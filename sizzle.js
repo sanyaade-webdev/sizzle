@@ -1,3 +1,153 @@
+/* ************************************************************************
+
+   qooxdoo - the new era of web development
+
+   http://qooxdoo.org
+
+   Copyright:
+     2008-2009 Sebastian Werner, http://sebastian-werner.net
+
+   License:
+     LGPL: http://www.gnu.org/licenses/lgpl.html
+     EPL: http://www.eclipse.org/org/documents/epl-v10.php
+     See the LICENSE file in the project's top-level directory for details.
+
+   Authors:
+     * Sebastian Werner (wpbasti)
+     * Fabian Jakobs (fjakobs)
+
+   ======================================================================
+
+   This class contains code based on the following work:
+
+   * Sizzle CSS Selector Engine - v1.0
+
+     http://sizzlejs.com/
+     http://groups.google.com/group/sizzlejs
+     http://github.com/jeresig/sizzle/tree
+
+     Snapshot from Oct 29 2009
+       commit  b363fde6c7b55d43777b28eeb7ede5827e899ec9
+     Copyright:
+       (c) 2009, The Dojo Foundation
+
+     License:
+       MIT: http://www.opensource.org/licenses/mit-license.php
+
+   ----------------------------------------------------------------------
+
+     Copyright (c) 2009 John Resig
+
+     Permission is hereby granted, free of charge, to any person
+     obtaining a copy of this software and associated documentation files
+     (the "Software"), to deal in the Software without restriction,
+     including without limitation the rights to use, copy, modify, merge,
+     publish, distribute, sublicense, and/or sell copies of the Software,
+     and to permit persons to whom the Software is furnished to do so,
+     subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be
+     included in all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     DEALINGS IN THE SOFTWARE.
+
+************************************************************************ */
+
+/**
+ * The selector engine supports virtually all CSS 3 Selectors – this
+ * even includes some parts that are infrequently implemented such as
+ * escaped selectors (<code>.foo\\+bar</code>), Unicode selectors, and results
+ * returned in document order. There are a few notable exceptions to
+ * the CSS 3 selector support:
+ *
+ * * <code>:root</code>
+ * * <code>:target</code>
+ * * <code>:nth-last-child</code>
+ * * <code>:nth-of-type</code>
+ * * <code>:nth-last-of-type</code>
+ * * <code>:first-of-type</code>
+ * * <code>:last-of-type</code>
+ * * <code>:only-of-type</code>
+ * * <code>:lang()</code>
+ *
+ * In addition to the CSS 3 Selectors the engine supports the following
+ * additional selectors or conventions.
+ *
+ * *Changes*
+ *
+ * * <code>:not(a.b)</code>: Supports non-simple selectors in :not() (most browsers only support :not(a), for example).
+ * * <code>:not(div > p)</code>: Supports full selectors in :not().
+ * * <code>:not(div, p)</code>: Supports multiple selectors in :not().
+ * * <code>[NAME=VALUE]</code>: Doesn’t require quotes around the specified value in an attribute selector.
+ *
+ * *Additions*
+ *
+ * * <code>[NAME!=VALUE]</code>: Finds all elements whose NAME attribute doesn’t match the specified value. Is equivalent to doing :not([NAME=VALUE]).
+ * * <code>:contains(TEXT)</code>: Finds all elements whose textual context contains the word ‘TEXT’ (case sensitive).
+ * * <code>:header</code>: Finds all elements that are a header element (h1, h2, h3, h4, h5, h6).
+ * * <code>:parent</code>: Finds all elements that contains another element.
+ *
+ * *Positional Selector Additions*
+ *
+ * * <code>:first</code>/</code>:last</code>: Finds the first or last matching element on the page. (e.g. “div:first” would find the first div on the page, in document order)
+ * * <code>:even</code>/<code>:odd</code>: Finds every other element on the page (counting begins at 0, so :even would match the first element).
+ * * <code>:eq</code>/<code>:nth</code>: Finds the Nth element on the page (e.g. :eq(5) finds the 6th element on the page).
+ * * <code>:lt</code>/<code>:gt</code>: Finds all elements at positions less than or greater than the specified positions.
+ *
+ * *Form Selector Additions*
+ *
+ * * <code>:input</code>: Finds all input elements (includes textareas, selects, and buttons).
+ * * <code>:text</code>, <code>:checkbox</code>, <code>:file</code>, <code>:password</code>, <code>:submit</code>, <code>:image</code>, <code>:reset</code>, <code>:button</code>: Finds the input element with the specified input type (<code>:button</code> also finds button elements).
+ *
+ * Based on Sizzle by John Resig, see also:
+ *
+ * * http://sizzlejs.com/
+ *
+ * For further usage details, also have a look at the Wiki page under:
+ *
+ * * http://wiki.github.com/jeresig/sizzle
+ */
+qx.Bootstrap.define("qx.bom.Selector",
+{
+  statics :
+  {
+    /**
+     * Queries the document for the given selector. Supports all CSS3 selectors
+     * plus some extensions as mentioned in the class description.
+     *
+     * @signature function(selector, context)
+     * @param selector {String} Valid selector (CSS3 + extensions)
+     * @param context {Element} Context element (result elements must be children of this element)
+     * @return {Array} Matching elements
+     */
+    query : null,
+
+    /**
+     * Returns an reduced array which only contains the elements from the given
+     * array which matches the given selector
+     *
+     * @signature function(selector, set)
+     * @param selector {String} Selector to filter given set
+     * @param set {Array} List to filter according to given selector
+     * @return {Array} New array containing matching elements
+     */
+    matches : null
+  }
+});
+
+
+/**
+ * Below is the original Sizzle code. Snapshot date is mentioned in the head of
+ * this file.
+ */
+ 
 /*!
  * Sizzle CSS Selector Engine - v1.0
  *  Copyright 2009, The Dojo Foundation
@@ -1008,8 +1158,16 @@ var posProcess = function(selector, context){
 	return Sizzle.filter( later, tmpSet );
 };
 
-// EXPOSE
+// EXPOSE qooxdoo variant
 
-window.Sizzle = Sizzle;
+var Selector = qx.bom.Selector;
+
+Selector.query = function(selector, context) {
+  return Sizzle(selector, context);
+};
+
+Selector.matches = function(selector, set) {
+  return Sizzle(selector, null, null, set);
+};
 
 })();
