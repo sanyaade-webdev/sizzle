@@ -5,7 +5,7 @@
    http://qooxdoo.org
 
    Copyright:
-     2008-2009 Sebastian Werner, http://sebastian-werner.net
+     2008-2010 Sebastian Werner, http://sebastian-werner.net
 
    License:
      LGPL: http://www.gnu.org/licenses/lgpl.html
@@ -15,6 +15,7 @@
    Authors:
      * Sebastian Werner (wpbasti)
      * Fabian Jakobs (fjakobs)
+     * Andreas Ecker (ecker)
 
    ======================================================================
 
@@ -22,12 +23,18 @@
 
    * Sizzle CSS Selector Engine - v1.0
 
-     http://sizzlejs.com/
-     http://groups.google.com/group/sizzlejs
-     http://github.com/jeresig/sizzle/tree
+     Homepage:
+       http://sizzlejs.com/
 
-     Snapshot from Oct 29 2009
-       commit  b363fde6c7b55d43777b28eeb7ede5827e899ec9
+     Documentation:
+       http://wiki.github.com/jeresig/sizzle
+
+     Discussion:
+       http://groups.google.com/group/sizzlejs
+
+     Code:
+       http://github.com/jeresig/sizzle/tree
+
      Copyright:
        (c) 2009, The Dojo Foundation
 
@@ -58,14 +65,20 @@
      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
      DEALINGS IN THE SOFTWARE.
 
+   ----------------------------------------------------------------------
+
+     Version:
+       Snapshot taken on 2010-11-22, latest Sizzle commit on 2010-11-09:
+       commit  112ff172e06c92fa87c3362baad13153302f7359
+
 ************************************************************************ */
 
 /**
- * The selector engine supports virtually all CSS 3 Selectors – this
- * even includes some parts that are infrequently implemented such as
- * escaped selectors (<code>.foo\\+bar</code>), Unicode selectors, and results
- * returned in document order. There are a few notable exceptions to
- * the CSS 3 selector support:
+ * The selector engine supports virtually all CSS 3 Selectors  – this even
+ * includes some parts that are infrequently implemented such as escaped
+ * selectors (<code>.foo\\+bar</code>), Unicode selectors, and results returned
+ * in document order. There are a few notable exceptions to the CSS 3 selector
+ * support:
  *
  * * <code>:root</code>
  * * <code>:target</code>
@@ -82,23 +95,23 @@
  *
  * *Changes*
  *
- * * <code>:not(a.b)</code>: Supports non-simple selectors in :not() (most browsers only support :not(a), for example).
- * * <code>:not(div > p)</code>: Supports full selectors in :not().
- * * <code>:not(div, p)</code>: Supports multiple selectors in :not().
- * * <code>[NAME=VALUE]</code>: Doesn’t require quotes around the specified value in an attribute selector.
+ * * <code>:not(a.b)</code>: Supports non-simple selectors in <code>:not()</code> (most browsers only support <code>:not(a)</code>, for example).
+ * * <code>:not(div > p)</code>: Supports full selectors in <code>:not()</code>.
+ * * <code>:not(div, p)</code>: Supports multiple selectors in <code>:not()</code>.
+ * * <code>[NAME=VALUE]</code>: Doesn't require quotes around the specified value in an attribute selector.
  *
  * *Additions*
  *
- * * <code>[NAME!=VALUE]</code>: Finds all elements whose NAME attribute doesn’t match the specified value. Is equivalent to doing :not([NAME=VALUE]).
- * * <code>:contains(TEXT)</code>: Finds all elements whose textual context contains the word ‘TEXT’ (case sensitive).
+ * * <code>[NAME!=VALUE]</code>: Finds all elements whose <code>NAME</code> attribute doesn't match the specified value. Is equivalent to doing <code>:not([NAME=VALUE])</code>.
+ * * <code>:contains(TEXT)</code>: Finds all elements whose textual context contains the word <code>TEXT</code> (case sensitive).
  * * <code>:header</code>: Finds all elements that are a header element (h1, h2, h3, h4, h5, h6).
  * * <code>:parent</code>: Finds all elements that contains another element.
  *
  * *Positional Selector Additions*
  *
- * * <code>:first</code>/</code>:last</code>: Finds the first or last matching element on the page. (e.g. “div:first” would find the first div on the page, in document order)
- * * <code>:even</code>/<code>:odd</code>: Finds every other element on the page (counting begins at 0, so :even would match the first element).
- * * <code>:eq</code>/<code>:nth</code>: Finds the Nth element on the page (e.g. :eq(5) finds the 6th element on the page).
+ * * <code>:first</code>/</code>:last</code>: Finds the first or last matching element on the page. (e.g. <code>div:first</code> would find the first div on the page, in document order)
+ * * <code>:even</code>/<code>:odd</code>: Finds every other element on the page (counting begins at 0, so <code>:even</code> would match the first element).
+ * * <code>:eq</code>/<code>:nth</code>: Finds the Nth element on the page (e.g. <code>:eq(5)</code> finds the 6th element on the page).
  * * <code>:lt</code>/<code>:gt</code>: Finds all elements at positions less than or greater than the specified positions.
  *
  * *Form Selector Additions*
@@ -106,15 +119,15 @@
  * * <code>:input</code>: Finds all input elements (includes textareas, selects, and buttons).
  * * <code>:text</code>, <code>:checkbox</code>, <code>:file</code>, <code>:password</code>, <code>:submit</code>, <code>:image</code>, <code>:reset</code>, <code>:button</code>: Finds the input element with the specified input type (<code>:button</code> also finds button elements).
  *
- * Based on Sizzle by John Resig, see also:
+ * Based on Sizzle by John Resig, see:
  *
  * * http://sizzlejs.com/
  *
- * For further usage details, also have a look at the Wiki page under:
+ * For further usage details also have a look at the wiki page at:
  *
  * * http://wiki.github.com/jeresig/sizzle
  */
-qx.Bootstrap.define("qx.bom.Selector",
+qx.Class.define("qx.bom.Selector",
 {
   statics :
   {
@@ -1459,6 +1472,10 @@ var posProcess = function( selector, context ) {
 
 	return Sizzle.filter( later, tmpSet );
 };
+
+/**
+ * Above is the original Sizzle code.
+ */
 
 // EXPOSE qooxdoo variant
 
